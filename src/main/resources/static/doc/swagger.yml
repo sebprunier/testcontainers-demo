@@ -1,0 +1,174 @@
+openapi: 3.0.0
+
+info:
+  title: Testcontainers API
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api
+    description: Serveur local, pour effectuer des tests en cours de développement
+
+paths:
+  /v1/data/providers:
+    get:
+      summary: Liste des fournisseurs de données.
+      tags:
+        - Data
+      security:
+        - BasicAuth: [ ]
+      responses:
+        '200':
+          description: OK - Retourne les fournisseurs de données.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DataProvider'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/data/providers/{id}:
+    get:
+      summary: Détail d'un fournisseur de données.
+      tags:
+        - Data
+      security:
+        - BasicAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: identifiant unique du fournisseur de données.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK - Retourne le détail du fournisseur de données.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataProvider'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/data/sources:
+    get:
+      summary: Liste des sources de données.
+      tags:
+        - Data
+      security:
+        - BasicAuth: [ ]
+      responses:
+        '200':
+          description: OK - Retourne les sources de données.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DataSource'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/data/sources/{id}:
+    get:
+      summary: Détail d'une source de données.
+      tags:
+        - Data
+      security:
+        - BasicAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: identifiant unique de la source de données.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK - Retourne le détail de la source de données.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataSource'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+  schemas:
+    DataProvider:
+      description: Fournisseur de données.
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identifiant unique du fournisseur de données.
+          example: "insee"
+        name:
+          type: string
+          description: Nom du fournisseur de données.
+          example: "Insee"
+        url:
+          type: string
+          description: URL du fournisseur de données.
+          example: "https://www.insee.fr"
+        description:
+          type: string
+          description: Description du fournisseur de données.
+          example: "Institut national de la statistique et des études économiques"
+      required:
+        - id
+        - name
+    DataSource:
+      description: Source de données.
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identifiant unique de la source de données.
+          example: "insee-cog"
+        name:
+          type: string
+          description: Nom de la source de données.
+          example: "Code officiel géographique de l'Insee"
+        url:
+          type: string
+          description: URL de la source de données.
+          example: "https://www.insee.fr/fr/information/5057840"
+        description:
+          type: string
+          description: Description de la source de données.
+          example: "Code officiel géographique au 1er janvier 2021"
+        publication_date:
+          type: string
+          format: date
+          description: Date de publication de la source de données.
+          example: "2021-03-19"
+        provider:
+          $ref: '#/components/schemas/DataProvider'
+      required:
+        - id
+        - name
+        - provider
+  responses:
+    Unauthorized:
+      description: Unauthorized - vous n'êtes pas autorisé à appeler cette API.
+    BadRequest:
+      description: BadRequest - les paramètres d'appel de l'API ne sont pas corrects.
+    NotFound:
+      description: NotFound - ressource non trouvée.
+    InternalServerError:
+      description: InternalServerError - erreur technique imprévue, contactez le support <dev@1934.io>
