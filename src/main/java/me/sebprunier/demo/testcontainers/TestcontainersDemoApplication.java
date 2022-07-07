@@ -12,6 +12,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
 
 @SpringBootApplication
+@EnableAsync
 public class TestcontainersDemoApplication {
 
     private final Logger logger = LoggerFactory.getLogger(TestcontainersDemoApplication.class);
@@ -44,12 +45,7 @@ public class TestcontainersDemoApplication {
         return new ForkJoinPool(
                 parallelism,
                 ForkJoinPool.defaultForkJoinWorkerThreadFactory,
-                new Thread.UncaughtExceptionHandler() {
-                    @Override
-                    public void uncaughtException(Thread t, Throwable e) {
-                        logger.error("Uncaught error in thread: " + t.getName(), e);
-                    }
-                },
+                (t, e) -> logger.error("Uncaught error in thread: " + t.getName(), e),
                 true
         );
     }
