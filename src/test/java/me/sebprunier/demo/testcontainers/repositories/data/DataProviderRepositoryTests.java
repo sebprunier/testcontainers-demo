@@ -13,9 +13,9 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Testcontainers
@@ -38,8 +38,8 @@ public class DataProviderRepositoryTests {
     }
 
     @Test
-    public void testFindById() throws ExecutionException, InterruptedException {
-        Optional<DataProvider> providerOpt = dataProviderRepository.findById("insee").get();
+    public void testFindById() {
+        Optional<DataProvider> providerOpt = dataProviderRepository.findById("insee");
         assertTrue(providerOpt.isPresent());
         DataProvider provider = providerOpt.get();
         assertEquals("insee", provider.id);

@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 public class ControllerUtils {
 
@@ -17,17 +16,9 @@ public class ControllerUtils {
         return "{ \"message\": \"Bad Request\" }";
     }
 
-    public static CompletableFuture<String> badRequestAsync(HttpServletResponse response) {
-        return CompletableFuture.completedFuture(badRequest(response));
-    }
-
     public static String notFound(HttpServletResponse response) {
         response.setStatus(HttpStatus.NOT_FOUND.value());
         return "{ \"message\": \"Not Found\" }";
-    }
-
-    public static CompletableFuture<String> notFoundAsync(HttpServletResponse response) {
-        return CompletableFuture.completedFuture(notFound(response));
     }
 
     public static String processOptionalString(Optional<String> strOpt, HttpServletResponse response) {
