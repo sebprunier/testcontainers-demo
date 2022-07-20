@@ -1,27 +1,26 @@
 package me.sebprunier.demo.testcontainers.repositories.data;
 
 import me.sebprunier.demo.testcontainers.models.data.DataProvider;
+import me.sebprunier.demo.testcontainers.repositories.data.mappers.DataProviderMapper;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import javax.sql.DataSource;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Testcontainers
-public class DataProviderRepositoryTests {
+public class DataProviderRepositoryTests_V3 {
 
-    private final Logger logger = LoggerFactory.getLogger(DataProviderRepositoryTests.class);
+    private final Logger logger = LoggerFactory.getLogger(DataProviderRepositoryTests_V3.class);
 
     @Container
     private static final PostgreSQLContainer<?> POSTGRESQL_CONTAINER = new PostgreSQLContainer<>("postgres:12")
@@ -29,17 +28,9 @@ public class DataProviderRepositoryTests {
             .withPassword("testcontainers_demo_password")
             .withInitScript("database/ups/v001__data_sources.sql");
 
-    @Autowired
-    private DataProviderRepository dataProviderRepository;
-
-    @DynamicPropertySource
-    public static void overrideApplicationProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", POSTGRESQL_CONTAINER::getJdbcUrl);
-    }
-
     @Test
     public void testFindById() {
-        Optional<DataProvider> providerOpt = dataProviderRepository.findById("insee");
+        Optional<DataProvider> providerOpt = dataProviderRepository().findById("insee");
         assertTrue(providerOpt.isPresent());
         DataProvider provider = providerOpt.get();
         assertEquals("insee", provider.id);
@@ -50,4 +41,21 @@ public class DataProviderRepositoryTests {
         assertEquals("Institut national de la statistique et des études économiques", provider.descriptionOpt.get());
     }
 
+    private DataProviderRepository dataProviderRepository() {
+        return new DataProviderRepository(
+                new NamedParameterJdbcTemplate(
+                        getTestContainerDataSource()
+                ),
+                new DataProviderMapper()
+        );
+    }
+
+    private DataSource getTestContainerDataSource() {
+        DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
+        dataSourceBuilder.driverClassName("org.postgresql.Driver");
+        dataSourceBuilder.url(POSTGRESQL_CONTAINER.getJdbcUrl());
+        dataSourceBuilder.username("testcontainers_demo_user");
+        dataSourceBuilder.password("testcontainers_demo_password");
+        return dataSourceBuilder.build();
+    }
 }
