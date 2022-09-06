@@ -103,6 +103,99 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /v1/regions:
+    get:
+      summary: Liste des régions.
+      tags:
+        - Territoire
+      security:
+        - BasicAuth: [ ]
+      parameters:
+        - name: lat
+          in: query
+          required: false
+          description: Latitude recherchée
+          schema:
+            type: number
+          example: 46.785948
+        - name: lon
+          in: query
+          required: false
+          description: Longitude recherchée
+          schema:
+            type: number
+          example: 0.434537
+      responses:
+        '200':
+          description: OK - Retourne les régions.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Region'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/regions/{code}:
+    get:
+      summary: Détail d'une région.
+      tags:
+        - Territoire
+      security:
+        - BasicAuth: [ ]
+      parameters:
+        - name: code
+          in: path
+          required: true
+          description: Code de la région.
+          schema:
+            type: string
+          example: 93
+      responses:
+        '200':
+          description: OK - Retourne le détail de la région.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Region'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/regions/{code}/contour:
+    get:
+      summary: Contour géographique d'une région.
+      tags:
+        - Territoire
+      security:
+        - BasicAuth: [ ]
+      parameters:
+        - name: code
+          in: path
+          required: true
+          description: Code de la région.
+          schema:
+            type: string
+          example: 93
+      responses:
+        '200':
+          description: OK - Retourne le contour de la région.
+          content:
+            application/json:
+              schema:
+                type: object
+                externalDocs:
+                  url: https://datatracker.ietf.org/doc/html/rfc7946#section-3
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 components:
   securitySchemes:
     BasicAuth:
@@ -163,6 +256,21 @@ components:
         - id
         - name
         - provider
+    Region:
+      description: Région.
+      type: object
+      properties:
+        reg:
+          type: string
+          description: Code région.
+          example: "93"
+        libelle:
+          type: string
+          description: Nom en clair (typographie riche) avec article.
+          example: "Provence-Alpes-Côte d'Azur"
+      required:
+        - reg
+        - libelle
   responses:
     Unauthorized:
       description: Unauthorized - vous n'êtes pas autorisé à appeler cette API.

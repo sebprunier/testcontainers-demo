@@ -13,5 +13,5 @@ Création de la base de données en local :
 ```sql
 CREATE DATABASE testcontainers_demo_db;
 CREATE USER testcontainers_demo_user WITH PASSWORD 'testcontainers_demo_password';
-GRANT ALL PRIVILEGES ON DATABASE testcontainers_demo_db TO testcontainers_demo_user;
+ALTER ROLE testcontainers_demo_user SUPERUSER;
 ```
