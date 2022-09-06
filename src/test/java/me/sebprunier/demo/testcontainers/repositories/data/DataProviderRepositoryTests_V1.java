@@ -21,8 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Testcontainers
 public class DataProviderRepositoryTests_V1 {
 
-    private final Logger logger = LoggerFactory.getLogger(DataProviderRepositoryTests_V1.class);
-
     @Container
     private static final PostgreSQLContainer<?> POSTGRESQL_CONTAINER = new PostgreSQLContainer<>("postgres:12")
             .withInitScript("database/ups/v001__data_sources.sql");

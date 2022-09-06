@@ -1,17 +1,11 @@
 package me.sebprunier.demo.testcontainers;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import java.sql.Connection;
-import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -39,22 +33,6 @@ public class DatabaseTests {
         logger.info("Container Jdbc Url: {}", POSTGRESQL_CONTAINER.getJdbcUrl());
         logger.info("Container Username: {}", POSTGRESQL_CONTAINER.getUsername());
         logger.info("Container Password: {}", POSTGRESQL_CONTAINER.getPassword());
-    }
-
-    @Test
-    void testEvolutions() {
-        try {
-            Connection connection = POSTGRESQL_CONTAINER.createConnection("");
-
-            // Ups
-            ScriptUtils.executeSqlScript(connection, new ClassPathResource("database/ups/v001__data_sources.sql"));
-
-            // Downs
-            ScriptUtils.executeSqlScript(connection, new ClassPathResource("database/downs/v001__data_sources.sql"));
-
-        } catch (SQLException e) {
-            Assertions.fail(e);
-        }
     }
 
 }
