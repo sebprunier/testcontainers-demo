@@ -3,11 +3,13 @@ package me.sebprunier.demo.testcontainers_live;
 import me.sebprunier.demo.testcontainers.TestcontainersDemoApplication;
 import me.sebprunier.demo.testcontainers.models.data.DataProvider;
 import me.sebprunier.demo.testcontainers.repositories.data.DataProviderRepository;
+import me.sebprunier.demo.testcontainers.repositories.data.DataProviderRepositoryTests_V2;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -19,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = TestcontainersDemoApplication.class)
 @Testcontainers
+//@ContextConfiguration(initializers = Test04_DataProviderRepositoryTests_ApplicationContextInitializer.Initializer.class)
 public class Test04_DataProviderRepositoryTests_ApplicationContextInitializer {
 
     private final Logger logger = LoggerFactory.getLogger(Test04_DataProviderRepositoryTests_ApplicationContextInitializer.class);
