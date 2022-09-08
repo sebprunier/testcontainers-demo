@@ -12,9 +12,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 // The extension finds all fields that are annotated with @Container and calls their container lifecycle methods
 // (methods on the Startable interface).
 @Testcontainers
-public class DatabaseTests {
+public class PostgreSQLContainerTests {
 
-    private final Logger logger = LoggerFactory.getLogger(DatabaseTests.class);
+    private final Logger logger = LoggerFactory.getLogger(PostgreSQLContainerTests.class);
 
     // Containers declared as static fields will be shared between test methods.
     // They will be started only once before any test method is executed and stopped after the last test method has executed

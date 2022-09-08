@@ -3,8 +3,6 @@ package me.sebprunier.demo.testcontainers.repositories.data;
 import me.sebprunier.demo.testcontainers.models.data.DataProvider;
 import me.sebprunier.demo.testcontainers.repositories.data.mappers.DataProviderMapper;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -22,8 +20,6 @@ public class DataProviderRepositoryTests_V3 {
 
     @Container
     private static final PostgreSQLContainer<?> POSTGRESQL_CONTAINER = new PostgreSQLContainer<>("postgres:12")
-            .withUsername("testcontainers_demo_user")
-            .withPassword("testcontainers_demo_password")
             .withInitScript("database/ups/v001__data_sources.sql");
 
     @Test
@@ -52,8 +48,8 @@ public class DataProviderRepositoryTests_V3 {
         DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
         dataSourceBuilder.driverClassName("org.postgresql.Driver");
         dataSourceBuilder.url(POSTGRESQL_CONTAINER.getJdbcUrl());
-        dataSourceBuilder.username("testcontainers_demo_user");
-        dataSourceBuilder.password("testcontainers_demo_password");
+        dataSourceBuilder.username(POSTGRESQL_CONTAINER.getUsername());
+        dataSourceBuilder.password(POSTGRESQL_CONTAINER.getPassword());
         return dataSourceBuilder.build();
     }
 }

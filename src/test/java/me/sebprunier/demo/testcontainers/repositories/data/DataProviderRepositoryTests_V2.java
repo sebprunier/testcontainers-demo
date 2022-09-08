@@ -2,8 +2,6 @@ package me.sebprunier.demo.testcontainers.repositories.data;
 
 import me.sebprunier.demo.testcontainers.models.data.DataProvider;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContextInitializer;
@@ -24,15 +22,13 @@ public class DataProviderRepositoryTests_V2 {
 
     @Container
     private static final PostgreSQLContainer<?> POSTGRESQL_CONTAINER = new PostgreSQLContainer<>("postgres:12")
-            .withUsername("testcontainers_demo_user")
-            .withPassword("testcontainers_demo_password")
             .withInitScript("database/ups/v001__data_sources.sql");
 
 
     public static class DockerPostgreDataSourceInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
         @Override
         public void initialize(ConfigurableApplicationContext applicationContext) {
-
+            System.out.println(POSTGRESQL_CONTAINER.getJdbcUrl());
             TestPropertySourceUtils.addInlinedPropertiesToEnvironment(
                     applicationContext,
                     "spring.datasource.url=" + POSTGRESQL_CONTAINER.getJdbcUrl(),
@@ -44,7 +40,6 @@ public class DataProviderRepositoryTests_V2 {
 
     @Autowired
     private DataProviderRepository dataProviderRepository;
-
 
     @Test
     public void testFindById() {
