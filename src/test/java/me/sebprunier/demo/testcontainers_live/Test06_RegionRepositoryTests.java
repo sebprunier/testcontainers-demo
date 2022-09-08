@@ -28,7 +28,7 @@ public class Test06_RegionRepositoryTests {
 
     private final Logger logger = LoggerFactory.getLogger(Test06_RegionRepositoryTests.class);
 
-    // FIXME this does not work!
+    // FIXME this does not work! => use postgis/postgis:12-3.2
     @Container
     private static final PostgreSQLContainer<?> POSTGRESQL_CONTAINER = new PostgreSQLContainer<>("postgres:12")
             .withInitScript("database/ups/v001__data_sources.sql")
