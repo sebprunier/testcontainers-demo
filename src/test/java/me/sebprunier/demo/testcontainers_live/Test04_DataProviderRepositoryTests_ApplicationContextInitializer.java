@@ -49,4 +49,13 @@ public class Test04_DataProviderRepositoryTests_ApplicationContextInitializer {
         assertEquals("Institut national de la statistique et des études économiques", provider.descriptionOpt.get());
     }
 
+    /*
+        TestPropertySourceUtils.addInlinedPropertiesToEnvironment(
+                applicationContext,
+                "spring.datasource.url=" + POSTGRESQL_CONTAINER.getJdbcUrl(),
+                "spring.datasource.username=" + POSTGRESQL_CONTAINER.getUsername(),
+                "spring.datasource.password=" + POSTGRESQL_CONTAINER.getPassword()
+        );
+     */
+
 }

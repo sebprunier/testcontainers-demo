@@ -30,7 +30,7 @@ public class Test05_DataProviderRepositoryTests_DynamicPropertySource {
     @Autowired
     private DataProviderRepository dataProviderRepository;
 
-    // TODO create a @DynamicPropertySource method with a DynamicPropertyRegistry parameter
+    // TODO create a @DynamicPropertySource static method with a DynamicPropertyRegistry parameter
 
     @Test
     public void testFindById() {
@@ -46,4 +46,9 @@ public class Test05_DataProviderRepositoryTests_DynamicPropertySource {
         assertEquals("Institut national de la statistique et des études économiques", provider.descriptionOpt.get());
     }
 
+    /*
+      registry.add("spring.datasource.url", POSTGRESQL_CONTAINER::getJdbcUrl);
+      registry.add("spring.datasource.username", POSTGRESQL_CONTAINER::getUsername);
+      registry.add("spring.datasource.password", POSTGRESQL_CONTAINER::getPassword);
+     */
 }
