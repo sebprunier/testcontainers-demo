@@ -1,17 +1,23 @@
 # Testcontainers Demo
 
-A regarder : 
+https://testcontainers.com/getting-started/
 
-* https://www.youtube.com/watch?v=v3eQCIWLYOw&ab_channel=IntelliJIDEAbyJetBrains
-  * Creuser la problématique `static` / `@BeforeClass` / `@DynamicPropertySource` 
-  * Quarkus : "Quarkus automatically spins up all the TestContainers you need based on the dependencies in your pom.xml (DB, Kafka, etc...) during dev/tests without having to setup/code anything, it's out of the box"
+## How to run the app?
 
-## Base de données
-
-Création de la base de données en local : 
+Create a local PostgreSQL database with the folling commands: 
 
 ```sql
 CREATE DATABASE testcontainers_demo_db;
 CREATE USER testcontainers_demo_user WITH PASSWORD 'testcontainers_demo_password';
 ALTER ROLE testcontainers_demo_user SUPERUSER;
+```
+
+Then, run the 2 SQL scripts from the `src/main/resources/database` directory:
+* `ups/v001__data_sources.sql`
+* `ups/v002__regions.sql`
+
+Finally, run the app with the following command:
+
+```
+./mvnw spring-boot:run
 ```
