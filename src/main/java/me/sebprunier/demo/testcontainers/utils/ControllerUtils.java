@@ -1,9 +1,9 @@
 package me.sebprunier.demo.testcontainers.utils;
 
+import jakarta.servlet.http.HttpServletResponse;
 import me.sebprunier.demo.testcontainers.models.Jsonable;
 import org.springframework.http.HttpStatus;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 public class ControllerUtils {

@@ -1,5 +1,6 @@
 package me.sebprunier.demo.testcontainers.controllers.data;
 
+import jakarta.servlet.http.HttpServletResponse;
 import me.sebprunier.demo.testcontainers.models.data.DataSource;
 import me.sebprunier.demo.testcontainers.repositories.data.DataSourceRepository;
 import me.sebprunier.demo.testcontainers.utils.ControllerUtils;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Optional;
 
