@@ -20,6 +20,7 @@ import org.testcontainers.containers.ToxiproxyContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.net.SocketTimeoutException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -82,6 +83,26 @@ public class DataProviderRepositoryTests_Toxiproxy {
             e.printStackTrace();
             assertInstanceOf(CannotGetJdbcConnectionException.class, e);
         }
+    }
+
+    @Test
+    public void testFindByIdWithConnectionTimeout() {
+        try {
+            TOXIPROXY.toxics().timeout("TIMEOUT_CONNECTION_DOWNSTREAM", ToxicDirection.DOWNSTREAM, 0);
+            dataProviderRepository.findById("insee");
+            fail();
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertInstanceOf(SocketTimeoutException.class, getRootCause(e));
+        }
+    }
+
+    private static Throwable getRootCause(Exception e) {
+        Throwable rootCause = e;
+        while (rootCause.getCause() != null && rootCause.getCause() != rootCause) {
+            rootCause = rootCause.getCause();
+        }
+        return rootCause;
     }
 
 }

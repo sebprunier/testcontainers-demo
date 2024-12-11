@@ -1,5 +1,7 @@
 package me.sebprunier.demo.testcontainers_live;
 
+import me.sebprunier.demo.testcontainers.TestcontainersDemoApplication;
+import me.sebprunier.demo.testcontainers.models.data.DataProvider;
 import me.sebprunier.demo.testcontainers.repositories.data.DataProviderRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +13,12 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.fail;
+import java.util.Optional;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = TestcontainersDemoApplication.class)
 @Testcontainers
 public class Test08_DataProviderRepositoryTests_Toxiproxy {
 
@@ -36,6 +40,19 @@ public class Test08_DataProviderRepositoryTests_Toxiproxy {
 
         registry.add("spring.datasource.username", POSTGRESQL_CONTAINER::getUsername);
         registry.add("spring.datasource.password", POSTGRESQL_CONTAINER::getPassword);
+    }
+
+    @Test
+    public void testFindById() {
+        Optional<DataProvider> providerOpt = dataProviderRepository.findById("insee");
+        assertTrue(providerOpt.isPresent());
+        DataProvider provider = providerOpt.get();
+        assertEquals("insee", provider.id);
+        assertEquals("Insee", provider.name);
+        assertTrue(provider.urlOpt.isPresent());
+        assertEquals("https://www.insee.fr", provider.urlOpt.get());
+        assertTrue(provider.descriptionOpt.isPresent());
+        assertEquals("Institut national de la statistique et des études économiques", provider.descriptionOpt.get());
     }
 
     @Test
