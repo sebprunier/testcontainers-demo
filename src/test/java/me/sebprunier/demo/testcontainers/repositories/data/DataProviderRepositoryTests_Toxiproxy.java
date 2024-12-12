@@ -5,7 +5,9 @@ import eu.rekawek.toxiproxy.ToxiproxyClient;
 import eu.rekawek.toxiproxy.model.ToxicDirection;
 import me.sebprunier.demo.testcontainers.models.data.DataProvider;
 import me.sebprunier.demo.testcontainers_live.Test06_RegionRepositoryTests;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,34 +32,43 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DataProviderRepositoryTests_Toxiproxy {
 
     private static final Network SHARED_NETWORK = Network.newNetwork();
-    private static final String SHARED_NETWORK_ALIAS = "postgresql";
 
     @Container
     private static final PostgreSQLContainer<?> POSTGRESQL_CONTAINER = new PostgreSQLContainer<>("postgres:12")
             .withInitScript("database/ups/v001__data_sources.sql")
             .withNetwork(SHARED_NETWORK)
-            .withNetworkAliases(SHARED_NETWORK_ALIAS);
+            .withNetworkAliases("postgresql");
 
     @Container
     private static final ToxiproxyContainer TOXIPROXY_CONTAINER = new ToxiproxyContainer("ghcr.io/shopify/toxiproxy:2.5.0")
             .withNetwork(SHARED_NETWORK);
 
-    private static Proxy TOXIPROXY;
+    private static ToxiproxyClient TOXIPROXYCLIENT;
+    private Proxy proxy;
 
     @Autowired
     private DataProviderRepository dataProviderRepository;
 
     @BeforeAll
     public static void beforeAll() throws Exception {
-        ToxiproxyClient toxiproxyClient = new ToxiproxyClient(
+        TOXIPROXYCLIENT = new ToxiproxyClient(
                 TOXIPROXY_CONTAINER.getHost(),
                 TOXIPROXY_CONTAINER.getControlPort()
         );
-        TOXIPROXY = toxiproxyClient.createProxy(
-                SHARED_NETWORK_ALIAS,
+    }
+
+    @BeforeEach
+    public void beforeEach() throws Exception {
+        proxy = TOXIPROXYCLIENT.createProxy(
+                "postgresql-proxy",
                 "0.0.0.0:8666",
                 "postgresql:5432"
         );
+    }
+
+    @AfterEach
+    public void afterEach() throws Exception {
+        proxy.delete();
     }
 
     @DynamicPropertySource
@@ -76,7 +87,7 @@ public class DataProviderRepositoryTests_Toxiproxy {
     @Test
     public void testFindByIdWithoutConnection() {
         try {
-            TOXIPROXY.toxics().resetPeer("CUT_CONNECTION_DOWNSTREAM", ToxicDirection.DOWNSTREAM, 0);
+            proxy.toxics().resetPeer("CUT_CONNECTION_DOWNSTREAM", ToxicDirection.DOWNSTREAM, 0);
             dataProviderRepository.findById("insee");
             fail();
         } catch (Exception e) {
@@ -88,7 +99,7 @@ public class DataProviderRepositoryTests_Toxiproxy {
     @Test
     public void testFindByIdWithConnectionTimeout() {
         try {
-            TOXIPROXY.toxics().timeout("TIMEOUT_CONNECTION_DOWNSTREAM", ToxicDirection.DOWNSTREAM, 0);
+            proxy.toxics().timeout("TIMEOUT_CONNECTION_DOWNSTREAM", ToxicDirection.DOWNSTREAM, 0);
             dataProviderRepository.findById("insee");
             fail();
         } catch (Exception e) {
